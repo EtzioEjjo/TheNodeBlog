@@ -1,4 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
+:root{
+    --primary-color:#047aed;
+
+
+}
 *{
     box-sizing: border-box;
     padding: 0;
@@ -32,8 +37,9 @@ margin: 10px 0;
 img{
     width:100%;
 }
+/*navbar*/
 .navbar{
-    background-color:#047aed ;
+    background-color:var(--primary-color);
     color:#fff;
     height: 70px;
 }
@@ -53,6 +59,40 @@ img{
 .navbar a:hover{
         border-bottom: 2px #fff solid;
 }
+
+/*showcase*/
+.showcase{
+background-color: var(--primary-color);
+height: 400px;
+color: #fff;
+position: relative;
+}
+
+.showcase h1{
+    
+    font-size: 40px;
+
+}
+.showcase p{
+margin: 20px 0;
+}
+.showcase .grid{
+    grid-template-columns: 55% 45%;
+    gap:30px;
+    overflow: visible;
+
+}
+.showcase-form{
+    position: relative;
+    top:60px;
+    height: 350px;
+    width:400px;
+    z-index: 100;
+    justify-self: flex-end;
+}
+/*utility*/
+
+
 .container{
     max-width:1100px;
    margin: 0 auto;
@@ -62,6 +102,17 @@ img{
    
  
 }
+.card{
+    background-color: #fff;
+    color:#333;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgb(0,0,0,0.2);
+    padding:20px;
+    margin: 20px;
+    
+
+}
+
 .flex{
 
     display: flex;
@@ -70,3 +121,11 @@ img{
     height: 100%;
 } 
 
+.grid{
+    display: grid;
+    grid-template-columns:repeat(2,1fr) ;
+    gap: 20px;
+    justify-content: right;
+    align-items: center;
+    height: 100%;
+}
