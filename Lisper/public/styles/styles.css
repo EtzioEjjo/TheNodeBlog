@@ -1,0 +1,118 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body{
+    height: 100vh;
+    background-color:     #3c67e3;
+    font-family: "Titan One", cursive;
+}
+.main{
+    height: 100%;
+    width: 100%;
+}
+.container{
+    height: 100%;
+    width: 400px;
+    margin: auto;
+    display: grid;
+    grid-template-rows: min-content 700px min-content;
+    text-align:center;
+
+  }
+.title , .user{
+  padding: 1em;
+  font-size: 2em;
+  color: #fff;
+  font-weight: bold;
+  font-family: "Titan One", cursive;
+ 
+    
+}
+
+.secret{
+    height: 100%;
+    width: 100%;
+    background: url("/images/whisper-img.jpg") ;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: auto;
+    border-radius: 6px;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    font-size: 1.4em;
+    position: relative;
+    text-align: center;
+    color:  rgb(88 199 250 / 0%);
+    font-family: "Gloria Hallelujah", cursive;
+    transition: color .3s ease-in;
+    position: relative;
+
+    
+
+  
+}
+.secret:hover::before{
+    content: "";
+    /*linear-gradient(#5ddcff, #3c67e3,#4e00c2)*/
+    background-image: linear-gradient(
+        var(--rotate),
+        #5ddcff,
+        #3c67e3 43%,
+        #4e00c2
+      ); 
+       position: absolute;
+    top: -1%;
+    left: -2%;
+    width: 104%;
+  height: 102%;
+  z-index: -1;
+  animation: spin 2.5s linear infinite;
+
+
+}
+
+
+.secret:hover{
+    color:  rgb(88 199 250 / 100%)
+
+}
+
+@property --rotate {
+    syntax: "<angle>";
+    initial-value: 132deg;
+    inherits: false;
+  }
+  
+  @keyframes spin {
+    0% {
+      --rotate: 0deg;
+    }
+    100% {
+      --rotate: 360deg;
+    }
+  }
+  
+
+/* .secret p:first-child{
+    opacity: 0;
+}
+.secret:hover p:first-child{
+    opacity: 1;
+}
+ */
+
+
+/* .secret p{
+    position: absolute;
+    top: 200px;
+    left: auto;
+    font-size: 1.2em;
+    display: none;
+}
+.secret:hover{
+    display: inline;
+} */
