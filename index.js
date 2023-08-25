@@ -1,39 +1,14 @@
 import express from "express";
 import bodyParser from "body-parser";
+import mongoose from "mongoose";
 
 const app = express();
-const port = 4000;
-
+const port = 3000;
+let Post=null;
 // In-memory data store
-let posts = [
-  {
-    id: 1,
-    title: "The Rise of Decentralized Finance",
-    content:
-      "Decentralized Finance (DeFi) is an emerging and rapidly evolving field in the blockchain industry. It refers to the shift from traditional, centralized financial systems to peer-to-peer finance enabled by decentralized technologies built on Ethereum and other blockchains. With the promise of reduced dependency on the traditional banking sector, DeFi platforms offer a wide range of services, from lending and borrowing to insurance and trading.",
-    author: "Alex Thompson",
-    date: "2023-08-01T10:00:00Z",
-  },
-  {
-    id: 2,
-    title: "The Impact of Artificial Intelligence on Modern Businesses",
-    content:
-      "Artificial Intelligence (AI) is no longer a concept of the future. It's very much a part of our present, reshaping industries and enhancing the capabilities of existing systems. From automating routine tasks to offering intelligent insights, AI is proving to be a boon for businesses. With advancements in machine learning and deep learning, businesses can now address previously insurmountable problems and tap into new opportunities.",
-    author: "Mia Williams",
-    date: "2023-08-05T14:30:00Z",
-  },
-  {
-    id: 3,
-    title: "Sustainable Living: Tips for an Eco-Friendly Lifestyle",
-    content:
-      "Sustainability is more than just a buzzword; it's a way of life. As the effects of climate change become more pronounced, there's a growing realization about the need to live sustainably. From reducing waste and conserving energy to supporting eco-friendly products, there are numerous ways we can make our daily lives more environmentally friendly. This post will explore practical tips and habits that can make a significant difference.",
-    author: "Samuel Green",
-    date: "2023-08-10T09:15:00Z",
-  },
-];
+
 
 let lastId = 3;
-
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -41,26 +16,22 @@ app.use(express.static('public'));
 
 //Write your code here//
 app.get('/',(req,res) =>{
+  res.redirect('/posts');
 
 })
 
 //CHALLENGE 1: GET All posts
-app.get('/posts',(req,res) =>{
+app.get('/posts',async (req,res) =>{
+   const items=await Post.find();
+   console.log(items);
 
-  res.render('index.ejs',{posts:posts})
+  res.render('index.ejs',{posts:items})
 })
 
-//CHALLENGE 2: GET a specific post by id
 
-app.get('/posts/:id',(req,res) =>{
-  const id=parseInt(req.params.id);
-  const foundPost=posts.filter(el=>el.id===id);
-  
 
-  res.render('index.ejs',{post:foundPost})
-})
 
-//CHALLENGE 3: POST a new post
+//Handling the New Button
 app.get('/new',(req,res) =>{
   res.render('modify.ejs' ,{
     heading:"New Post",
@@ -68,55 +39,91 @@ app.get('/new',(req,res) =>{
 
   })
 })
-app.post('/api/posts/',(req,res) =>{
-  const newPost={
-    id:posts.length+1,
+
+//Adding a new item using the form
+app.post('/api/posts',async (req,res) =>{
+  const id= await Post.countDocuments() +1;
+  console.log("id is "+id);
+  const newPost=new Post ( {
+    _id:id,
     title:req.body.title,
     content:req.body.content,
     author:req.body.author,
-    date: new Date().getFullYear()
-
-  }
-  posts.push(newPost);
+    date: `${getDateFormatted()}`
+  });
+  await newPost.save();
   res.redirect('/posts');
 })
 
-//CHALLENGE 4: PATCH a post when you just want to update one parameter
-app.get('/edit/:id',(req,res) =>{
+
+
+//Editing an Item
+app.get('/edit/:id', async(req,res) =>{
   const id=parseInt(req.params.id);
-  const post=posts.find(el=>el.id===id)
+  const getItem=await Post.find({_id:id})
+  const post={
+    
+  }
+  console.log(post);
   res.render('modify.ejs',{
     heading:"Edit Post",
     submit:"Submit",
-    post:post
+    post:getItem[0]
 
   })
 })
-app.post('/api/posts/:id',(req,res)=>{
+
+
+app.post('/api/posts/:id',async(req,res)=>{
   const id=parseInt(req.params.id);
-  const idx=posts.findIndex(el=>el.id===id);
- const newPost={
-    id:id,
-    title:req.body.title || posts[idx].title,
-    content:req.body.content || posts[idx].content,
-    author:req.body.author || posts[idx].author
-  }
-  posts[idx]=newPost;
+  await Post.deleteOne({_id:id});
+
+ const newPost=new Post({
+    _id:id,
+    title:req.body.title,
+    content:req.body.content ,
+    author:req.body.author ,
+  })
+  await newPost.save();
   res.redirect('/posts')
 
 })
 
 
-//CHALLENGE 5: DELETE a specific post by providing the post id.
-app.get('/api/posts/delete/:id',(req,res) =>{
+
+//Deleting an item
+app.get('/api/posts/delete/:id',async (req,res) =>{
   const id=parseInt(req.params.id);
-  const foundePost=posts.findIndex(el=>el.id===id);
-  posts.splice(foundePost,1);
+  await Post.deleteOne({_id:id})
   res.redirect('/posts')
  
-
 })
 
-app.listen(port, () => {
+
+
+
+app.listen(port, async() => {
   console.log(`API is running at http://localhost:${port}`);
+
+  await  mongoose.connect('mongodb://localhost:27017/postsDB');
+  const postSchema=mongoose.Schema({
+  _id:Number,
+  title:String,
+  content:String,
+  author:String,
+  date:String
+  });
+ Post=mongoose.model('Post',postSchema);
+
 });
+
+
+function getDateFormatted() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const day = today.getDate();
+  const month = today.getMonth() + 1; // Adding 1 to get correct month
+
+  const formattedDate = `${month}-${day}-${year}`;
+  return formattedDate;
+}
