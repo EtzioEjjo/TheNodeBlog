@@ -12,7 +12,7 @@ user functions:-
 
 -the user can delete posts
 
-# Build with :
+# Built with :
 
 ### Node.js
 
